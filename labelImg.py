@@ -219,7 +219,7 @@ class MainWindow(QMainWindow, WindowMixin):
         # Actions
         action = partial(new_action, self)
         quit = action(get_str('quit'), self.close,
-                      'Ctrl+Q', 'quit', get_str('quitApp'))
+                      'Ctrl+Shift+Alt+Q', 'quit', get_str('quitApp'))
 
         open = action(get_str('openFile'), self.open_file,
                       'Ctrl+O', 'open', get_str('openFileDetail'))
@@ -267,7 +267,7 @@ class MainWindow(QMainWindow, WindowMixin):
                          'Ctrl+Shift+S', 'save-as', get_str('saveAsDetail'), enabled=False)
 
         close = action(get_str('closeCur'), self.close_file,
-                       'Ctrl+W', 'close', get_str('closeCurDetail'))
+                       'Ctrl+Shift+Q', 'close', get_str('closeCurDetail'))
 
         delete_image = action(get_str('deleteImg'), self.delete_image,
                               'Ctrl+Shift+D', 'close', get_str('deleteImgDetail'))
@@ -279,12 +279,12 @@ class MainWindow(QMainWindow, WindowMixin):
                         'Ctrl+L', 'color_line', get_str('boxLineColorDetail'))
 
         create_mode = action(get_str('crtBox'), self.set_create_mode,
-                             'w', 'new', get_str('crtBoxDetail'), enabled=False)
+                             ['w', 'ctrl+w'], 'new', get_str('crtBoxDetail'), enabled=False)
         edit_mode = action(get_str('editBox'), self.set_edit_mode,
                            'Ctrl+J', 'edit', get_str('editBoxDetail'), enabled=False)
 
         create = action(get_str('crtBox'), self.create_shape,
-                        'w', 'new', get_str('crtBoxDetail'), enabled=False)
+                        ['w', 'ctrl+w'], 'new', get_str('crtBoxDetail'), enabled=False)
         delete = action(get_str('delBox'), self.delete_selected_shape,
                         'Delete', 'delete', get_str('delBoxDetail'), enabled=False)
         copy = action(get_str('dupBox'), self.copy_selected_shape,
