@@ -90,7 +90,8 @@ def xml2csv(location, training_dir, path_prefix):
         # Get the width, height of images
         #  to normalize the bounding boxes
         size = root.find("size")
-        width, height = float(size.find("width").text), float(size.find("height").text)
+        width, height = float(size.find("width").text), float(
+            size.find("height").text)
 
         # Find all the bounding objects
         for label_object in root.findall("object"):
@@ -150,7 +151,8 @@ if __name__ == "__main__":
                        help="Output name of csv file")
     arg_p.add_argument("-c", "--classes",
                        type=str,
-                       default=os.path.join("..", "data", "predefined_classes.txt"),
+                       default=os.path.join(
+                           "..", "data", "predefined_classes.txt"),
                        help="Label classes path")
     args = vars(arg_p.parse_args())
 

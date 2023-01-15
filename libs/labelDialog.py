@@ -42,7 +42,8 @@ class LabelDialog(QDialog):
             for item in list_item:
                 self.list_widget.addItem(item)
             self.list_widget.itemClicked.connect(self.list_item_click)
-            self.list_widget.itemDoubleClicked.connect(self.list_item_double_click)
+            self.list_widget.itemDoubleClicked.connect(
+                self.list_item_double_click)
             layout.addWidget(self.list_widget)
 
         self.setLayout(layout)
@@ -76,8 +77,10 @@ class LabelDialog(QDialog):
             cursor_pos.setY(max(0, cursor_pos.y() - offset.y()))
 
             parent_bottom_right = self.parentWidget().geometry()
-            max_x = parent_bottom_right.x() + parent_bottom_right.width() - self.sizeHint().width()
-            max_y = parent_bottom_right.y() + parent_bottom_right.height() - self.sizeHint().height()
+            max_x = parent_bottom_right.x() + parent_bottom_right.width() - \
+                self.sizeHint().width()
+            max_y = parent_bottom_right.y() + parent_bottom_right.height() - \
+                self.sizeHint().height()
             max_global = self.parentWidget().mapToGlobal(QPoint(max_x, max_y))
             if cursor_pos.x() > max_global.x():
                 cursor_pos.setX(max_global.x())

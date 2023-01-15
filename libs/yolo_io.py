@@ -8,6 +8,7 @@ from libs.constants import DEFAULT_ENCODING
 TXT_EXT = '.txt'
 ENCODE_METHOD = DEFAULT_ENCODING
 
+
 class YOLOWriter:
 
     def __init__(self, folder_name, filename, img_size, database_src='Unknown', local_img_path=None):
@@ -53,20 +54,23 @@ class YOLOWriter:
 
         if target_file is None:
             out_file = open(
-            self.filename + TXT_EXT, 'w', encoding=ENCODE_METHOD)
-            classes_file = os.path.join(os.path.dirname(os.path.abspath(self.filename)), "classes.txt")
+                self.filename + TXT_EXT, 'w', encoding=ENCODE_METHOD)
+            classes_file = os.path.join(os.path.dirname(
+                os.path.abspath(self.filename)), "classes.txt")
             out_class_file = open(classes_file, 'w')
 
         else:
             out_file = codecs.open(target_file, 'w', encoding=ENCODE_METHOD)
-            classes_file = os.path.join(os.path.dirname(os.path.abspath(target_file)), "classes.txt")
+            classes_file = os.path.join(os.path.dirname(
+                os.path.abspath(target_file)), "classes.txt")
             out_class_file = open(classes_file, 'w')
 
-
         for box in self.box_list:
-            class_index, x_center, y_center, w, h = self.bnd_box_to_yolo_line(box, class_list)
+            class_index, x_center, y_center, w, h = self.bnd_box_to_yolo_line(
+                box, class_list)
             # print (classIndex, x_center, y_center, w, h)
-            out_file.write("%d %.6f %.6f %.6f %.6f\n" % (class_index, x_center, y_center, w, h))
+            out_file.write("%d %.6f %.6f %.6f %.6f\n" %
+                           (class_index, x_center, y_center, w, h))
 
         # print (classList)
         # print (out_class_file)
@@ -75,7 +79,6 @@ class YOLOWriter:
 
         out_class_file.close()
         out_file.close()
-
 
 
 class YoloReader:
@@ -115,7 +118,8 @@ class YoloReader:
 
     def add_shape(self, label, x_min, y_min, x_max, y_max, difficult):
 
-        points = [(x_min, y_min), (x_max, y_min), (x_max, y_max), (x_min, y_max)]
+        points = [(x_min, y_min), (x_max, y_min),
+                  (x_max, y_max), (x_min, y_max)]
         self.shapes.append((label, points, None, None, difficult))
 
     def yolo_line_to_shape(self, class_index, x_center, y_center, w, h):
@@ -137,7 +141,8 @@ class YoloReader:
         bnd_box_file = open(self.file_path, 'r')
         for bndBox in bnd_box_file:
             class_index, x_center, y_center, w, h = bndBox.strip().split(' ')
-            label, x_min, y_min, x_max, y_max = self.yolo_line_to_shape(class_index, x_center, y_center, w, h)
+            label, x_min, y_min, x_max, y_max = self.yolo_line_to_shape(
+                class_index, x_center, y_center, w, h)
 
             # Caveat: difficult flag is discarded when saved as yolo format.
             self.add_shape(label, x_min, y_min, x_max, y_max, False)

@@ -2,6 +2,7 @@ import os
 import sys
 import unittest
 
+
 class TestPascalVocRW(unittest.TestCase):
 
     def test_upper(self):
@@ -12,7 +13,8 @@ class TestPascalVocRW(unittest.TestCase):
         from pascal_voc_io import PascalVocReader
 
         # Test Write/Read
-        writer = PascalVocWriter('tests', 'test', (512, 512, 1), local_img_path='tests/test.512.512.bmp')
+        writer = PascalVocWriter(
+            'tests', 'test', (512, 512, 1), local_img_path='tests/test.512.512.bmp')
         difficult = 1
         writer.add_bnd_box(60, 40, 430, 504, 'person', difficult)
         writer.add_bnd_box(113, 40, 450, 403, 'face', difficult)
@@ -24,9 +26,11 @@ class TestPascalVocRW(unittest.TestCase):
         person_bnd_box = shapes[0]
         face = shapes[1]
         self.assertEqual(person_bnd_box[0], 'person')
-        self.assertEqual(person_bnd_box[1], [(60, 40), (430, 40), (430, 504), (60, 504)])
+        self.assertEqual(person_bnd_box[1], [
+                         (60, 40), (430, 40), (430, 504), (60, 504)])
         self.assertEqual(face[0], 'face')
-        self.assertEqual(face[1], [(113, 40), (450, 40), (450, 403), (113, 403)])
+        self.assertEqual(
+            face[1], [(113, 40), (450, 40), (450, 403), (113, 403)])
 
 
 class TestCreateMLRW(unittest.TestCase):
@@ -37,8 +41,10 @@ class TestCreateMLRW(unittest.TestCase):
         sys.path.insert(0, libs_path)
         from create_ml_io import CreateMLWriter
 
-        person = {'label': 'person', 'points': ((65, 45), (420, 45), (420, 512), (65, 512))}
-        face = {'label': 'face', 'points': ((245, 250), (350, 250), (350, 365), (245, 365))}
+        person = {'label': 'person', 'points': (
+            (65, 45), (420, 45), (420, 512), (65, 512))}
+        face = {'label': 'face', 'points': (
+            (245, 250), (350, 250), (350, 365), (245, 365))}
 
         expected_width = 105    # 350-245 -> create_ml_io.py ll 46
         expected_height = 115   # 365-250 -> create_ml_io.py ll 49
@@ -50,7 +56,7 @@ class TestCreateMLRW(unittest.TestCase):
 
         writer = CreateMLWriter('tests', 'test.512.512.bmp', (512, 512, 1), shapes, output_file,
                                 local_img_path='tests/test.512.512.bmp')
-        
+
         writer.verified = True
         writer.write()
 
@@ -60,14 +66,19 @@ class TestCreateMLRW(unittest.TestCase):
 
         import json
         data_dict = json.loads(input_data)[0]
-        self.assertEqual(True, data_dict['verified'], 'verified tag not reflected')
-        self.assertEqual('test.512.512.bmp', data_dict['image'], 'filename not correct in .json')
-        self.assertEqual(2, len(data_dict['annotations']), 'output file contains to less annotations')
+        self.assertEqual(
+            True, data_dict['verified'], 'verified tag not reflected')
+        self.assertEqual('test.512.512.bmp',
+                         data_dict['image'], 'filename not correct in .json')
+        self.assertEqual(
+            2, len(data_dict['annotations']), 'output file contains to less annotations')
         face = data_dict['annotations'][1]
         self.assertEqual('face', face['label'], 'label name is wrong')
         face_coords = face['coordinates']
-        self.assertEqual(expected_width, face_coords['width'], 'calculated width is wrong')
-        self.assertEqual(expected_height, face_coords['height'], 'calculated height is wrong')
+        self.assertEqual(
+            expected_width, face_coords['width'], 'calculated width is wrong')
+        self.assertEqual(
+            expected_height, face_coords['height'], 'calculated height is wrong')
         self.assertEqual(expected_x, face_coords['x'], 'calculated x is wrong')
         self.assertEqual(expected_y, face_coords['y'], 'calculated y is wrong')
 

@@ -130,7 +130,7 @@ class Shape(object):
                         min_y += min_y_label
                     painter.drawText(int(min_x), int(min_y), self.label)
 
-            #if self.fill:
+            # if self.fill:
             #    color = self.select_fill_color if self.selected else self.fill_color
             #    painter.fillPath(line_path, color)
             painter.fillPath(line_path, self.fill_color)

@@ -12,6 +12,7 @@ from libs.ustr import ustr
 XML_EXT = '.xml'
 ENCODE_METHOD = DEFAULT_ENCODING
 
+
 class PascalVocWriter:
 
     def __init__(self, folder_name, filename, img_size, database_src='Unknown', local_img_path=None):
@@ -145,7 +146,8 @@ class PascalVocReader:
         y_min = int(float(bnd_box.find('ymin').text))
         x_max = int(float(bnd_box.find('xmax').text))
         y_max = int(float(bnd_box.find('ymax').text))
-        points = [(x_min, y_min), (x_max, y_min), (x_max, y_max), (x_min, y_max)]
+        points = [(x_min, y_min), (x_max, y_min),
+                  (x_max, y_max), (x_min, y_max)]
         self.shapes.append((label, points, None, None, difficult))
 
     def parse_xml(self):

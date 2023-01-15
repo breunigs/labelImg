@@ -3,6 +3,7 @@ import sys
 import unittest
 from libs.utils import Struct, new_action, new_icon, add_actions, format_shortcut, generate_color_by_text, natural_sort
 
+
 class TestUtils(unittest.TestCase):
 
     def test_generateColorByGivingUniceText_noError(self):
@@ -17,6 +18,7 @@ class TestUtils(unittest.TestCase):
         natural_sort(l1)
         for idx, val in enumerate(l1):
             self.assertTrue(val == expected_l1[idx])
+
 
 if __name__ == '__main__':
     unittest.main()

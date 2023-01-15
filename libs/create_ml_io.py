@@ -68,7 +68,8 @@ class CreateMLWriter:
         if not exists:
             output_dict.append(output_image_dict)
 
-        Path(self.output_file).write_text(json.dumps(output_dict), ENCODE_METHOD)
+        Path(self.output_file).write_text(
+            json.dumps(output_dict), ENCODE_METHOD)
 
     def calculate_coordinates(self, x1, x2, y1, y2):
         if x1 < x2:
@@ -128,7 +129,8 @@ class CreateMLReader:
         x_max = bnd_box["x"] + (bnd_box["width"] / 2)
         y_max = bnd_box["y"] + (bnd_box["height"] / 2)
 
-        points = [(x_min, y_min), (x_max, y_min), (x_max, y_max), (x_min, y_max)]
+        points = [(x_min, y_min), (x_max, y_min),
+                  (x_max, y_max), (x_min, y_max)]
         self.shapes.append((label, points, None, None, True))
 
     def get_shapes(self):

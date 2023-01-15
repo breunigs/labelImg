@@ -1124,7 +1124,7 @@ class MainWindow(QMainWindow, WindowMixin):
                                         u"<p>Make sure <i>%s</i> is a valid label file.")
                                        % (e, unicode_file_path))
                     self.status("Error reading %s" % unicode_file_path)
-                    
+
                     return False
                 self.image_data = self.label_file.image_data
                 self.line_color = QColor(*self.label_file.lineColor)
@@ -1206,7 +1206,7 @@ class MainWindow(QMainWindow, WindowMixin):
                 self.load_yolo_txt_by_filename(txt_path)
             elif os.path.isfile(json_path):
                 self.load_create_ml_json_by_filename(json_path, file_path)
-            
+
 
     def resizeEvent(self, event):
         if self.canvas and not self.image.isNull()\
@@ -1331,15 +1331,15 @@ class MainWindow(QMainWindow, WindowMixin):
             self.load_pascal_xml_by_filename(filename)
 
         elif self.label_file_format == LabelFileFormat.CREATE_ML:
-            
+
             filters = "Open Annotation JSON file (%s)" % ' '.join(['*.json'])
             filename = ustr(QFileDialog.getOpenFileName(self, '%s - Choose a json file' % __appname__, path, filters))
             if filename:
                 if isinstance(filename, (tuple, list)):
                     filename = filename[0]
 
-            self.load_create_ml_json_by_filename(filename, self.file_path)         
-        
+            self.load_create_ml_json_by_filename(filename, self.file_path)
+
 
     def open_dir_dialog(self, _value=False, dir_path=None, silent=False):
         if not self.may_continue():
@@ -1435,7 +1435,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
         if self.img_count <= 0:
             return
-        
+
         if not self.m_img_list:
             return
 
