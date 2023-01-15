@@ -49,7 +49,7 @@ class LabelDialog(QDialog):
             self.setToolTip(
                 "CTRL+1 to accept first item\nCTRL+2 to accept second item\n…\nCTRL+0 to accept tenth item")
 
-            for n in range(1, min(len(list_item), 10)):
+            for n in range(1, min(len(list_item), 10)+1):
                 key = 0 if n == 10 else n
                 shortcut = QShortcut(QKeySequence(u"Ctrl+%d" % key), self)
                 shortcut.activated.connect(partial(self.select_nth, n))
