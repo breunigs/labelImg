@@ -6,7 +6,8 @@ except ImportError:
     from PyQt4.QtGui import *
     from PyQt4.QtCore import *
 
-from libs.utils import new_icon, label_validator, trimmed
+from functools import partial
+from libs.utils import new_icon, label_validator, trimmed, new_action
 
 BB = QDialogButtonBox
 
@@ -39,14 +40,26 @@ class LabelDialog(QDialog):
 
         if list_item is not None and len(list_item) > 0:
             self.list_widget = QListWidget(self)
-            for item in list_item:
-                self.list_widget.addItem(item)
+            self.list_widget.addItems(list_item)
             self.list_widget.itemClicked.connect(self.list_item_click)
             self.list_widget.itemDoubleClicked.connect(
                 self.list_item_double_click)
             layout.addWidget(self.list_widget)
 
+            self.setToolTip(
+                "CTRL+1 to accept first item\nCTRL+2 to accept second item\n…\nCTRL+0 to accept tenth item")
+
+            for n in range(1, min(len(list_item), 10)):
+                key = 0 if n == 10 else n
+                shortcut = QShortcut(QKeySequence(u"Ctrl+%d" % key), self)
+                shortcut.activated.connect(partial(self.select_nth, n))
+
         self.setLayout(layout)
+
+    def select_nth(self, num):
+        item = self.list_widget.item(num-1)
+        self.list_item_click(item)
+        self.validate()
 
     def validate(self):
         if trimmed(self.edit.text()):
