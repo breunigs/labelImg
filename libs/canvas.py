@@ -126,7 +126,7 @@ class Canvas(QWidget):
                 current_width = abs(self.current[0].x() - pos.x())
                 current_height = abs(self.current[0].y() - pos.y())
                 self.parent().window().label_coordinates.setText(
-                        'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
+                    'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
 
                 color = self.drawing_line_color
                 if self.out_of_pixmap(pos):
@@ -152,7 +152,8 @@ class Canvas(QWidget):
                     min_size = min(abs(pos.x() - min_x), abs(pos.y() - min_y))
                     direction_x = -1 if pos.x() - min_x < 0 else 1
                     direction_y = -1 if pos.y() - min_y < 0 else 1
-                    self.line[1] = QPointF(min_x + direction_x * min_size, min_y + direction_y * min_size)
+                    self.line[1] = QPointF(
+                        min_x + direction_x * min_size, min_y + direction_y * min_size)
                 else:
                     self.line[1] = pos
 
@@ -188,7 +189,7 @@ class Canvas(QWidget):
                 current_width = abs(point1.x() - point3.x())
                 current_height = abs(point1.y() - point3.y())
                 self.parent().window().label_coordinates.setText(
-                        'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
+                    'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
             elif self.selected_shape and self.prev_point:
                 self.override_cursor(CURSOR_MOVE)
                 self.bounded_move_shape(self.selected_shape, pos)
@@ -201,7 +202,7 @@ class Canvas(QWidget):
                 current_width = abs(point1.x() - point3.x())
                 current_height = abs(point1.y() - point3.y())
                 self.parent().window().label_coordinates.setText(
-                        'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
+                    'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
             else:
                 # pan
                 delta = ev.pos() - self.pan_initial_pos
@@ -215,7 +216,8 @@ class Canvas(QWidget):
         # - Highlight vertex
         # Update shape/vertex fill and tooltip value accordingly.
         self.setToolTip("Image")
-        priority_list = self.shapes + ([self.selected_shape] if self.selected_shape else [])
+        priority_list = self.shapes + \
+            ([self.selected_shape] if self.selected_shape else [])
         for shape in reversed([s for s in priority_list if self.isVisible(s)]):
             # Look for a nearby vertex to highlight. If that fails,
             # check if we happen to be inside a shape.
@@ -246,7 +248,7 @@ class Canvas(QWidget):
                 current_width = abs(point1.x() - point3.x())
                 current_height = abs(point1.y() - point3.y())
                 self.parent().window().label_coordinates.setText(
-                        'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
+                    'Width: %d, Height: %d / X: %d; Y: %d' % (current_width, current_height, pos.x(), pos.y()))
                 break
         else:  # Nothing found, clear highlights, reset state.
             if self.h_shape:
@@ -410,7 +412,8 @@ class Canvas(QWidget):
             opposite_point_index = (index + 2) % 4
             opposite_point = shape[opposite_point_index]
 
-            min_size = min(abs(pos.x() - opposite_point.x()), abs(pos.y() - opposite_point.y()))
+            min_size = min(abs(pos.x() - opposite_point.x()),
+                           abs(pos.y() - opposite_point.y()))
             direction_x = -1 if pos.x() - opposite_point.x() < 0 else 1
             direction_y = -1 if pos.y() - opposite_point.y() < 0 else 1
             shift_pos = QPointF(opposite_point.x() + direction_x * min_size - point.x(),
@@ -535,12 +538,15 @@ class Canvas(QWidget):
             p.setPen(self.drawing_rect_color)
             brush = QBrush(Qt.BDiagPattern)
             p.setBrush(brush)
-            p.drawRect(int(left_top.x()), int(left_top.y()), int(rect_width), int(rect_height))
+            p.drawRect(int(left_top.x()), int(left_top.y()),
+                       int(rect_width), int(rect_height))
 
         if self.drawing() and not self.prev_point.isNull() and not self.out_of_pixmap(self.prev_point):
             p.setPen(QColor(0, 0, 0))
-            p.drawLine(int(self.prev_point.x()), 0, int(self.prev_point.x()), int(self.pixmap.height()))
-            p.drawLine(0, int(self.prev_point.y()), int(self.pixmap.width()), int(self.prev_point.y()))
+            p.drawLine(int(self.prev_point.x()), 0, int(
+                self.prev_point.x()), int(self.pixmap.height()))
+            p.drawLine(0, int(self.prev_point.y()), int(
+                self.pixmap.width()), int(self.prev_point.y()))
 
         self.setAutoFillBackground(True)
         if self.verified:
@@ -674,7 +680,8 @@ class Canvas(QWidget):
         self.repaint()
 
     def move_out_of_bound(self, step):
-        points = [p1 + p2 for p1, p2 in zip(self.selected_shape.points, [step] * 4)]
+        points = [p1 + p2 for p1,
+                  p2 in zip(self.selected_shape.points, [step] * 4)]
         return True in map(self.out_of_pixmap, points)
 
     def set_last_label(self, text, line_color=None, fill_color=None):
