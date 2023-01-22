@@ -1,4 +1,3 @@
-
 try:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
@@ -6,8 +5,6 @@ try:
 except ImportError:
     from PyQt4.QtGui import *
     from PyQt4.QtCore import *
-
-# from PyQt4.QtOpenGL import *
 
 from libs.shape import Shape
 from libs.utils import distance
@@ -65,6 +62,7 @@ class Canvas(QWidget):
         self.setFocusPolicy(Qt.WheelFocus)
         self.verified = False
         self.draw_square = False
+        self.preview_widget = None
 
         # initialisation for panning
         self.pan_initial_pos = QPoint()
@@ -72,6 +70,7 @@ class Canvas(QWidget):
     def set_drawing_color(self, qcolor):
         self.drawing_line_color = qcolor
         self.drawing_rect_color = qcolor
+        self.preview_widget.set_drawing_color(qcolor)
 
     def enterEvent(self, ev):
         self.override_cursor(self._cursor)
@@ -97,6 +96,7 @@ class Canvas(QWidget):
             self.un_highlight()
             self.de_select_shape()
         self.prev_point = QPointF()
+        self.preview_widget.set_editing(value)
         self.repaint()
 
     def un_highlight(self, shape=None):
@@ -542,11 +542,14 @@ class Canvas(QWidget):
                        int(rect_width), int(rect_height))
 
         if self.drawing() and not self.prev_point.isNull() and not self.out_of_pixmap(self.prev_point):
-            p.setPen(QColor(0, 0, 0))
+            p.setPen(QColor(200, 200, 200))
+            prev = p.compositionMode()
+            p.setCompositionMode(p.CompositionMode_Difference)
             p.drawLine(int(self.prev_point.x()), 0, int(
                 self.prev_point.x()), int(self.pixmap.height()))
             p.drawLine(0, int(self.prev_point.y()), int(
                 self.pixmap.width()), int(self.prev_point.y()))
+            p.setCompositionMode(prev)
 
         self.setAutoFillBackground(True)
         if self.verified:
@@ -559,10 +562,14 @@ class Canvas(QWidget):
             self.setPalette(pal)
 
         p.end()
+        self.preview_widget.set_pixmap(temp)
+        self.preview_widget.set_shapes(self.shapes)
 
     def transform_pos(self, point):
         """Convert from widget-logical coordinates to painter-logical coordinates."""
-        return point / self.scale - self.offset_to_center()
+        transformed = point / self.scale - self.offset_to_center()
+        self.preview_widget.set_position(transformed)
+        return transformed
 
     def offset_to_center(self):
         s = self.scale
@@ -753,3 +760,6 @@ class Canvas(QWidget):
 
     def set_drawing_shape_to_square(self, status):
         self.draw_square = status
+
+    def set_preview(self, preview):
+        self.preview_widget = preview

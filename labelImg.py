@@ -34,6 +34,7 @@ from libs.shape import Shape, DEFAULT_LINE_COLOR, DEFAULT_FILL_COLOR
 from libs.stringBundle import StringBundle
 from libs.canvas import Canvas
 from libs.zoomWidget import ZoomWidget
+from libs.previewWidget import PreviewWidget
 from libs.lightWidget import LightWidget
 from libs.labelDialog import LabelDialog
 from libs.colorDialog import ColorDialog
@@ -168,20 +169,21 @@ class MainWindow(QMainWindow, WindowMixin):
         list_layout.addWidget(self.label_list)
 
         self.dock = QDockWidget(get_str('boxLabelText'), self)
-        self.dock.setObjectName(get_str('labels'))
+        self.dock.setObjectName("1")
         self.dock.setWidget(label_list_container)
+
+        self.preview_widget = PreviewWidget()
+        self.preview_widget.setMinimumHeight(400)
+        self.preview = QDockWidget("Zoomed in Preview", self)
+        self.preview.setObjectName("2")
+        self.preview.setWidget(self.preview_widget)
 
         self.file_list_widget = QListWidget()
         self.file_list_widget.itemDoubleClicked.connect(
             self.file_item_double_clicked)
-        file_list_layout = QVBoxLayout()
-        file_list_layout.setContentsMargins(0, 0, 0, 0)
-        file_list_layout.addWidget(self.file_list_widget)
-        file_list_container = QWidget()
-        file_list_container.setLayout(file_list_layout)
         self.file_dock = QDockWidget(get_str('fileList'), self)
-        self.file_dock.setObjectName(get_str('files'))
-        self.file_dock.setWidget(file_list_container)
+        self.file_dock.setObjectName("3")
+        self.file_dock.setWidget(self.file_list_widget)
 
         self.zoom_widget = ZoomWidget()
         self.light_widget = LightWidget(get_str('lightWidgetTitle'))
@@ -192,6 +194,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.canvas.lightRequest.connect(self.light_request)
         self.canvas.set_drawing_shape_to_square(
             settings.get(SETTING_DRAW_SQUARE, False))
+        self.canvas.set_preview(self.preview_widget)
 
         scroll = QScrollArea()
         scroll.setWidget(self.canvas)
@@ -207,14 +210,17 @@ class MainWindow(QMainWindow, WindowMixin):
         self.canvas.shapeMoved.connect(self.set_dirty)
         self.canvas.selectionChanged.connect(self.shape_selection_changed)
         self.canvas.drawingPolygon.connect(self.toggle_drawing_sensitive)
+        self.canvas.drawingPolygon.connect(self.preview_widget.toggle_drawing)
 
         self.setCentralWidget(scroll)
         self.addDockWidget(Qt.RightDockWidgetArea, self.dock)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.preview)
         self.addDockWidget(Qt.RightDockWidgetArea, self.file_dock)
         self.file_dock.setFeatures(QDockWidget.DockWidgetFloatable)
+        self.preview.setFeatures(QDockWidget.DockWidgetFloatable)
 
         self.dock_features = QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetFloatable
-        self.dock.setFeatures(self.dock.features() ^ self.dock_features)
+        self.dock.setFeatures(self.dock.features() ^ int(self.dock_features))
 
         # Actions
         action = partial(new_action, self)
@@ -1249,6 +1255,7 @@ class MainWindow(QMainWindow, WindowMixin):
     def paint_canvas(self):
         assert not self.image.isNull(), "cannot paint null image"
         self.canvas.scale = 0.01 * self.zoom_widget.value()
+        self.preview_widget.set_scale(self.canvas.scale)
         self.canvas.overlay_color = self.light_widget.color()
         self.canvas.label_font_size = int(
             0.02 * max(self.image.width(), self.image.height()))
